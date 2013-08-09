@@ -1,0 +1,9 @@
+# .gitignore
+
+# Gonna keep the entire settings file until I find a better way to isolate private info
+cpr123/settings.py
+
+## 
+*.pyc
+*.pyo
+
