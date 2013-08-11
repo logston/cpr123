@@ -1,18 +1,27 @@
 from django.db import models
 
+from libs.us_states import us_states
+
 class Address(models.Model):
     address_1 = models.CharField(max_length=64, blank=True)
     address_2 = models.CharField(max_length=64, blank=True)
     city = models.CharField(max_length=32, blank=True)
-    states = ''
-    state = models.CharField(max_length=2, choices=states, default='NY')
+    state_choices = us_states
+    state = models.CharField(
+            max_length=2, choices=state_choices, default='NY')
     zip_code = models.CharField(max_length=16, blank=True)
 
 class Location(models.Model):
-    pass    
+    """Model a Training Center Location"""
+    name = models.CharField(max_length=32, blank=True)
+    address = models.ForeignKey(Address, null=True)
 
 class Instructor(models.Model):
-    pass
+    first_name = models.CharField(max_length=32, blank=True)
+    last_name = models.CharField(max_length=32, blank=True)
+    certs = models.CharField(max_length=32, blank=True)
+    address = models.ForeignKey(Address, null=True)
+    aha_instructor_id = models.CharField(max_length=16, blank=True)
 
 class Class(models.Model):
     enrollware_id = models.PositiveIntegerField(
