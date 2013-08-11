@@ -9,7 +9,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=16, blank=True)
 
 class Location(models.Model):
-    pass
+    pass    
 
 class Instructor(models.Model):
     pass
@@ -62,6 +62,8 @@ class Registration(models.Model):
     book = models.CharField(max_length=1, choices=book_choices, default='')
     book_pickup_date = models.DateField(null=True)
     total_charge = models.DecimalField(max_digits=6, decimal_places=2)
+    hear = models.CharField(max_length=128, blank=True)
+    return_client = models.NullBooleanField(default=False)
     comments = models.TextField(blank=True)
     codes = models.CharField(max_length=128, blank=True)
     status_choices = (
@@ -75,5 +77,6 @@ class Registration(models.Model):
             max_length=1, choices=status_choices, default='')
     checked_in = models.NullBooleanField()
     test_score = models.CharField(max_length=8, blank=True)
+    certficate_number = models.CharField(max_length=16, blank=True)
     remediation_scheduled = models.ForeignKey(
             Class, related_name='remediation_scheduled', null=True)
