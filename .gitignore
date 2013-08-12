@@ -1,6 +1,9 @@
 # .gitignore
 
-# Gonna keep the entire settings file until I find a better way to isolate private info
+priv/
+
+# Gonna keep the entire settings file private 
+# until I find a better way to isolate private info
 cpr123/settings.py
 
 ## sqlite3
