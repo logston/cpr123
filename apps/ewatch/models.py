@@ -47,6 +47,7 @@ class Class(models.Model):
             choices=STUDENT_MANIKIN_RATIOS,
             default=1)
     total_hours = models.PositiveSmallIntegerField(null=True)
+    time_added = models.DateTimeField(auto_now_add=True)
 
 class Registration(models.Model):
     class_pk = models.ForeignKey(Class, related_name='pk', null=True)
@@ -89,3 +90,4 @@ class Registration(models.Model):
     certficate_number = models.CharField(max_length=16, blank=True)
     remediation_scheduled = models.ForeignKey(
             Class, related_name='remediation_scheduled', null=True)
+    registration_time = models.DateTimeField(null=True)
