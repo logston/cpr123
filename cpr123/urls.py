@@ -17,6 +17,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(subdir+r'admin/', include(admin.site.urls)),
     
-    url(subdir+r'apps/ewatch/', include('apps.ewatch.urls')),
+    #url(subdir+r'apps/ewatch/', include('apps.ewatch.urls')),
 
 )

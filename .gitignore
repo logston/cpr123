@@ -1,5 +1,7 @@
 # .gitignore
 
+media/
+static/
 priv/
 
 # Gonna keep the entire settings file private 

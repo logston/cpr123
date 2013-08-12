@@ -1,18 +1,8 @@
-#! /usr/bin/env python3
-
-import sys
-sys.path.append('/home/paul/djprojs/cpr123')
-
-
 import http.cookiejar
 import urllib.parse
 import urllib.request
 
 from bs4 import BeautifulSoup
-
-# add an import to get username and password for enrollware
-from priv.enrollware_password import enrollware_password
-from priv.enrollware_username import enrollware_username
 
 class Fetch():
     """Make URL requests with cookies in cookiejar"""
@@ -36,17 +26,17 @@ class Fetch():
             response_parse = urllib.parse.urlparse(response.geturl())
             login_parse = urllib.parse.urlparse(login_response.geturl())
             if response_parse[2] == login_parse[2]: 
-                # response return by login is the end goal.
-                return response.read()  
+                # still on login page
+                return response  
             else:
                 # retry request once more
-                return self.call_opener(action, data).read()
+                return self.call_opener(action, data)
         else:
-            return response.read()
+            return response
 
     def call_opener(self, action, data=None):
         url = urllib.parse.urljoin(self.origin, action)
-        print(url)
+        print('requesting ' + url)
         request = urllib.request.Request(url)
         if data:
             data = urllib.parse.urlencode(data).encode('utf-8')
@@ -64,9 +54,7 @@ class Fetch():
         data = self.get_login_post_data(soup)
         action = self.get_login_post_action(soup)
         response = self.call_opener(action, data)
-        
         self.cj.save()
-
         return response
 
     def get_login_post_data(self, soup):
@@ -87,7 +75,3 @@ class Fetch():
     def get_login_post_action(self, soup):
         """Return the post action"""
         return soup.find(id="form1")['action']
-
-if __name__ == '__main__':
-    fobj = Fetch('testcj')
-    print(fobj.make_request('/admin/past-classes.aspx'))

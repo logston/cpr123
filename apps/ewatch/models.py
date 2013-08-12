@@ -48,6 +48,10 @@ class Class(models.Model):
             default=1)
     total_hours = models.PositiveSmallIntegerField(null=True)
     time_added = models.DateTimeField(auto_now_add=True)
+    removed = models.NullBooleanField()
+
+    def __unicode__(self):
+        return str(time)
 
 class Registration(models.Model):
     class_pk = models.ForeignKey(Class, related_name='pk', null=True)
