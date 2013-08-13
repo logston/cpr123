@@ -17,10 +17,6 @@ from django.db.utils import IntegrityError
 from django.utils import timezone
 from apps.ewatch.models import Class 
 
-# add an import to get username and password for enrollware
-from priv.enrollware_password import enrollware_password
-from priv.enrollware_username import enrollware_username
-from priv.cookiejar_file_path import cookiejar_file_path
 
 from libs.fetch.fetchpastclasses import FetchPastClasses
 from libs.fetch.fetchparser import FetchParser
@@ -31,7 +27,7 @@ db_id_list = [class_.enrollware_id for class_ in class_list]
 print(len(db_id_list), ' class objects found in database')
 
 START_DATE_STR = '12/01/2009'
-fetcher = FetchPastClasses(cookiejar_file_path)
+fetcher = FetchPastClasses()
 html = fetcher.fetch_between(
         start_date=datetime.strptime(START_DATE_STR,'%m/%d/%Y'),
         end_date=timezone.now())

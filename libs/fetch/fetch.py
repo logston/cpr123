@@ -4,10 +4,14 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
+from priv.cookiejar_file_path import cookiejar_file_path
+from priv.enrollware_password import enrollware_password
+from priv.enrollware_username import enrollware_username
+
 class Fetch():
     """Make URL requests with cookies in cookiejar"""
 
-    def __init__(self, cookiejar_file):
+    def __init__(self, cookiejar_file=cookiejar_file_path):
         self.origin = 'https://www.enrollware.com/'
         self.cj = http.cookiejar.LWPCookieJar(cookiejar_file)
         try:    

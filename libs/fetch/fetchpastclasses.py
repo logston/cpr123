@@ -14,7 +14,7 @@ class FetchPastClasses(Fetch):
     past_classes_url = '/admin/past-classes.aspx'
 
     def fetch_between(self, start_date, end_date=datetime.today()):
-        """Return past classes in list form"""
+        """Return past classes html"""
         # first make call to /admin/past-classes.apsx to get current inputs
         response = self.make_request(self.past_classes_url)
         response_html = response.read()
