@@ -4,6 +4,8 @@ import urllib.parse
 
 from bs4 import BeautifulSoup
 
+from libs.timezones import EST
+
 class FetchParser():
     def __init__(self, html):
         self.html = html
@@ -74,7 +76,9 @@ class FetchParser():
         hour = str(g[3]) if len(g[3]) == 2 else str('0'+g[3])
         datetime_list = (g[0], day, g[2], hour, g[4], g[5])
         datetime_str = ' '.join(datetime_list)
-        return datetime.strptime(datetime_str, '%B %d %Y %I %M %p')
+        dt = datetime.strptime(datetime_str, '%B %d %Y %I %M %p')
+        dt = dt.replace(tzinfo=EST())
+        return dt
 
     def get_details_dict_from_class_id(self):
         """Return a dictionary of class details"""
@@ -111,10 +115,34 @@ class FetchParser():
         details['time']=self._get_class_time(self.html)
         return details
 
+    def _get_reg_id_and_time(self, tr):
+        """Return 2-tup of registration id and time"""
+        # id
+        href = tr.find(title='Edit Registration')['href']
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(href)[4])
+        id_ = qs['id'][0]
+
+        # reg time
+        td_str = tr.find_all('td')[4].get_text().strip()
+        date_patt = re.compile(r'^.*(\d{2})/(\d{2})/(\d{4}).*', re.DOTALL)
+        date_r = re.match(date_patt, td_str).groups()
+        time_patt = re.compile(r'^.*(\d+):(\d{2})([a|p]m).*', re.DOTALL)
+        time_r = re.match(time_patt, td_str).groups()
+        hour = str(time_r[0]) if len(time_r[0]) == 2 else str('0'+time_r[0])
+        datetime_list = (date_r[0], date_r[1], date_r[2], 
+                         hour,      time_r[1], time_r[2].upper())
+        datetime_str = ' '.join(datetime_list)
+        dt = datetime.strptime(datetime_str, '%m %d %Y %I %M %p')
+        dt = dt.replace(tzinfo=EST())
+        return (id_, dt)
+
     def get_registration_ids_and_times(self):
         """Return a list of tuples of reg ids and times"""
         tbody = self._get_class_edit_tables(self.soup)[0].tbody
-        return len(tbody.find_all('tr'))
+        regs = []
+        for tr in tbody.find_all('tr'):
+            regs.append(self._get_reg_id_and_time(tr))
+        return regs
 
     def get_all_class_info(self):
         details = self.get_details_dict_from_class_id()
