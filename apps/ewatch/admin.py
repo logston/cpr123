@@ -1,4 +1,29 @@
 from django.contrib import admin
 from apps.ewatch.models import *
 
-admin.site.register(Class)
+class AddressAdmin(admin.ModelAdmin):
+    pass
+
+class LocationAdmin(admin.ModelAdmin):
+    pass
+
+class InstructorAdmin(admin.ModelAdmin):
+    pass
+
+class ClassAdmin(admin.ModelAdmin):
+    date_hierarchy = 'time'
+    list_display = ('enrollware_id', 'course', 'time', 'location')
+    search_fields = ('enrollware_id',)
+
+class RegistrationAdmin(admin.ModelAdmin):
+    pass
+
+class UpdateCheckClassAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Address)
+admin.site.register(Location)
+admin.site.register(Instructor)
+admin.site.register(Class, ClassAdmin)
+admin.site.register(Registration)
+admin.site.register(UpdateCheckClass)

@@ -1,6 +1,6 @@
 from django.db import models
 
-from libs.us_states import us_states
+from libs.ref.us_states import us_states
 
 class Address(models.Model):
     address_1 = models.CharField(max_length=64, blank=True)
@@ -11,17 +11,33 @@ class Address(models.Model):
             max_length=2, choices=state_choices, default='NY')
     zip_code = models.CharField(max_length=16, blank=True)
 
+    def __str__(self):
+        address_2 = self.address_2 if self.address_2 else ''
+        return ', '.join([
+                self.address_1,
+                address_2,
+                self.city,
+                self.state,
+                self.zip_code])
+
 class Location(models.Model):
     """Model a Training Center Location"""
     name = models.CharField(max_length=32, blank=True)
-    address = models.ForeignKey(Address, null=True)
+    address = models.ForeignKey(Address, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Instructor(models.Model):
     first_name = models.CharField(max_length=32, blank=True)
     last_name = models.CharField(max_length=32, blank=True)
     certs = models.CharField(max_length=32, blank=True)
-    address = models.ForeignKey(Address, null=True)
+    address = models.ForeignKey(Address, null=True, blank=True)
     aha_instructor_id = models.CharField(max_length=16, blank=True)
+
+    def __str__(self):
+        certs = ', '+self.certs if self.certs else ''
+        return self.first_name+' '+self.last_name+certs
 
 class Class(models.Model):
     enrollware_id = models.PositiveIntegerField(
@@ -30,18 +46,27 @@ class Class(models.Model):
     registration_link = models.URLField(blank=True)
     bulk_registration_link = models.URLField(blank=True)
     client = models.CharField(max_length=128, blank=True)
-    location = models.ForeignKey(Location, null=True)
-    instructor = models.ForeignKey(Instructor, null=True)
+    location = models.ForeignKey(Location, null=True, blank=True)
+    instructor = models.ForeignKey(Instructor, null=True, blank=True)
     time = models.DateTimeField(null=True, blank=True)
     max_students = models.PositiveSmallIntegerField(null=True, blank=True)
+    max_students_link = models.OneToOneField('self', null=True, blank=True)
     listing = models.NullBooleanField(
             help_text='Included in the online class catalog')
     #assistants = models.  multiForeignKey(Instructor)
     #public_notes = models.TextField(null=True)
     #internal_notes = models.TextField(null=True)
     #documents = models.    multiFileField()
-    price = models.PositiveSmallIntegerField(null=True, blank=True)
-    book_price = models.PositiveSmallIntegerField(null=True, blank=True)
+    price = models.DecimalField(
+            max_digits=6, 
+            decimal_places=2,
+            null=True, 
+            blank=True)
+    book_price = models.DecimalField(
+            max_digits=5,
+            decimal_places=2,
+            null=True, 
+            blank=True)
     STUDENT_MANIKIN_RATIOS = tuple((x+1, str(x+1)+':1') for x in range(8))
     student_manikin_ratio = models.PositiveSmallIntegerField(
             choices=STUDENT_MANIKIN_RATIOS,
@@ -50,11 +75,13 @@ class Class(models.Model):
     time_added = models.DateTimeField(auto_now_add=True)
     removed = models.NullBooleanField()
 
-    def __unicode__(self):
-        return str(time)
+    def __str__(self):
+        return str(self.enrollware_id)
 
 class Registration(models.Model):
     class_pk = models.ForeignKey(Class, related_name='pk', null=True)
+    enrollware_id = models.PositiveIntegerField(
+            unique=True, null=True, blank=True)
     reschedule_class = models.ForeignKey(Class, null=True)
     types = (('', ''), ('C', 'Certification'), ('R', 'Recertification'))
     cert_type = models.CharField(max_length=1, choices=types, default='')
@@ -75,7 +102,8 @@ class Registration(models.Model):
             ('S', 'Ship'))
     book = models.CharField(max_length=1, choices=book_choices, default='')
     book_pickup_date = models.DateField(null=True)
-    total_charge = models.DecimalField(max_digits=6, decimal_places=2)
+    total_charge = models.DecimalField(
+            max_digits=6, decimal_places=2, null=True, blank=True)
     hear = models.CharField(max_length=128, blank=True)
     return_client = models.NullBooleanField(default=False)
     comments = models.TextField(blank=True)
@@ -95,3 +123,13 @@ class Registration(models.Model):
     remediation_scheduled = models.ForeignKey(
             Class, related_name='remediation_scheduled', null=True)
     registration_time = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return ' '.join([str(self.enrollware_id)])
+
+class UpdateCheckClass(models.Model):
+    class_pk = models.ForeignKey(Class, null=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.class_pk) + ' @ ' + str(self.time)

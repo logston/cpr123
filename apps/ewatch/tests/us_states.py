@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from libs.us_states import us_states
+from libs.ref.us_states import us_states
 
 class TestUSStatesModule(TestCase):
     def test_number_of_states(self):
