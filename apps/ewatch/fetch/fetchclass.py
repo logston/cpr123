@@ -6,7 +6,7 @@ class FetchClass(Fetch):
     
     def fetch_class(self, class_id):
         """Fetch class details and registration ids/times"""
-        action = '/admin/class-edit1.aspx?ret=class-list.aspx&id=' + \
+        action = '/admin/class-edit.aspx?ret=class-list.aspx&id=' + \
                 str(class_id)
         response = self.make_request(action)
         parser = FetchParser(response.read())

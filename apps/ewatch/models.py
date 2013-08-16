@@ -1,6 +1,17 @@
+import re
+
 from django.db import models
 
 from libs.ref.us_states import us_states
+
+# phone number regex
+pnum_pattern = re.compile(r'[0-9]{10}')
+
+def validate_pnum(pnum):
+    """Raise validation error if not a 10 digit phone number"""
+    if not re.match(pnum_pattern, pnum):
+        raise ValidationError(u'%s is not a valid phone number'%pnum)
+
 
 class Address(models.Model):
     address_1 = models.CharField(max_length=64, blank=True)
@@ -79,29 +90,47 @@ class Class(models.Model):
         return str(self.enrollware_id)
 
 class Registration(models.Model):
-    class_pk = models.ForeignKey(Class, related_name='pk', null=True)
+    class_pk = models.ForeignKey(
+            Class, 
+            related_name='pk', 
+            null=True, 
+            blank=True)
     enrollware_id = models.PositiveIntegerField(
             unique=True, null=True, blank=True)
-    reschedule_class = models.ForeignKey(Class, null=True)
+    reschedule_class = models.ForeignKey(Class, null=True, blank=True)
     types = (('', ''), ('C', 'Certification'), ('R', 'Recertification'))
-    cert_type = models.CharField(max_length=1, choices=types, default='')
+    cert_type = models.CharField(
+            max_length=1, 
+            choices=types, 
+            default='', 
+            blank=True)
     first_name = models.CharField(max_length=32, blank=True)
     last_name = models.CharField(max_length=32, blank=True)
     email_address = models.EmailField(blank=True)
-    primary_phone = models.CharField(max_length=16, blank=True)
-    alternate_phone = models.CharField(max_length=16, blank=True)
+    primary_phone = models.CharField(
+            max_length=16, 
+            blank=True,
+            validators=[validate_pnum])
+    alternate_phone = models.CharField(
+            max_length=16, 
+            blank=True,
+            validators=[validate_pnum])
     mailing_address = models.ForeignKey(
-            Address, related_name='mailing', null=True)
+            Address, related_name='mailing', null=True, blank=True)
     billing_address = models.ForeignKey(
-            Address, related_name='billing', null=True)
+            Address, related_name='billing', null=True, blank=True)
     promo_code = models.CharField(max_length=16, blank=True)
     book_choices = (
             ('', ''),
             ('N','Not needed'), 
             ('P', 'Pickup'),
             ('S', 'Ship'))
-    book = models.CharField(max_length=1, choices=book_choices, default='')
-    book_pickup_date = models.DateField(null=True)
+    book = models.CharField(
+            max_length=1, 
+            choices=book_choices, 
+            default='',
+            blank=True)
+    book_pickup_date = models.DateField(null=True, blank=True)
     total_charge = models.DecimalField(
             max_digits=6, decimal_places=2, null=True, blank=True)
     hear = models.CharField(max_length=128, blank=True)
@@ -116,13 +145,19 @@ class Registration(models.Model):
             ('R','Remediate'),
             ('N','No Show'))
     status = models.CharField(
-            max_length=1, choices=status_choices, default='')
+            max_length=1, 
+            choices=status_choices, 
+            default='',
+            blank=True)
     checked_in = models.NullBooleanField()
     test_score = models.CharField(max_length=8, blank=True)
     certficate_number = models.CharField(max_length=16, blank=True)
     remediation_scheduled = models.ForeignKey(
-            Class, related_name='remediation_scheduled', null=True)
-    registration_time = models.DateTimeField(null=True)
+            Class, 
+            related_name='remediation_scheduled', 
+            null=True,
+            blank=True)
+    registration_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return ' '.join([str(self.enrollware_id)])
@@ -133,3 +168,10 @@ class UpdateCheckClass(models.Model):
 
     def __str__(self):
         return str(self.class_pk) + ' @ ' + str(self.time)
+
+class UpdateCheckRegistration(models.Model):
+    registration_pk = models.ForeignKey(Registration, null=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.registration_pk) + ' @ ' + str(self.time)

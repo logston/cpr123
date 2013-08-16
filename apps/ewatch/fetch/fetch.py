@@ -40,7 +40,7 @@ class Fetch():
 
     def call_opener(self, action, data=None):
         url = urllib.parse.urljoin(self.origin, action)
-        print('requesting ' + url)
+        #print('requesting ' + url)
         request = urllib.request.Request(url)
         if data:
             data = urllib.parse.urlencode(data).encode('utf-8')

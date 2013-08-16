@@ -1,5 +1,5 @@
 """
-This module defines a class that fetchs a classes info from 
+This module defines a class that fetchs Class info from 
 enrollware and then inserts that data into the db
 """
 from django.db.utils import IntegrityError
@@ -53,7 +53,7 @@ class UpdateClass():
     def insert_registrations(self, registrations):
         for reg in registrations:
             try:
-                Registration.objects.create(
+                Registration.objects.get_or_create(
                     class_pk=self.class_,
                     enrollware_id=reg[0], 
                     registration_time=reg[1])

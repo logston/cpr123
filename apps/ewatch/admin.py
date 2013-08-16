@@ -21,9 +21,13 @@ class RegistrationAdmin(admin.ModelAdmin):
 class UpdateCheckClassAdmin(admin.ModelAdmin):
     pass
 
+class UpdateCheckRegistrationAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Address)
 admin.site.register(Location)
 admin.site.register(Instructor)
 admin.site.register(Class, ClassAdmin)
 admin.site.register(Registration)
 admin.site.register(UpdateCheckClass)
+admin.site.register(UpdateCheckRegistration)
