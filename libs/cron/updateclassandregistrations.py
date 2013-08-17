@@ -15,7 +15,8 @@ import random
 import sys
 import time
 
-from apps.ewatch.models import Class, Registration, UpdateCheckClass
+from apps.ewatch.models import Class, Registration
+from apps.ewatch.models import UpdateCheckClass, UpdateCheckRegistration
 
 from apps.ewatch.db.updateclass import UpdateClass
 from apps.ewatch.db.updateregistration import UpdateRegistration
@@ -33,6 +34,9 @@ def update_class_and_registrations(enrollware_class_id=None):
     """Finds next Class valid for updating and updates it"""
     if not enrollware_class_id:
         updates = UpdateCheckClass.objects.order_by('-time').all()
+        if updates and updates[0].exception == True:
+            # immediatley exit since last update failed
+            sys.exit(1)
         updated_class_pks = []
         # find a list of updated classes
         for update in updates:
@@ -51,14 +55,22 @@ def update_class_and_registrations(enrollware_class_id=None):
                     break
          
     time.sleep(random.random()*15) # sleep for a random number of seconds
+    
+    try:
+        class_ = UpdateClass(enrollware_class_id).update()
 
-    UpdateClass(enrollware_class_id).update()
+        #class_ = Class.objects.get(enrollware_id=enrollware_class_id)
+        registrations = Registration.objects.filter(class_pk=class_)
+        for reg in registrations:
+            time.sleep(random.random()*5+3)
+            UpdateRegistration(enrollware_class_id, reg.enrollware_id).update()
+        
+        UpdateCheckClass.objects.create(class_pk=class_, exception=False)
+    except Exception as e:
+        # make note of the updates that have occured
+        UpdateCheckClass.objects.create(class_pk=class_, exception=True)
+        raise e
 
-    class_ = Class.objects.get(enrollware_id=enrollware_class_id)
-    registrations = Registration.objects.filter(class_pk=class_)
-    for reg in registrations:
-        time.sleep(random.random()*5+3)
-        UpdateRegistration(enrollware_class_id, reg.enrollware_id).update() 
 
 if __name__ == '__main__':
     if is_working_hours():

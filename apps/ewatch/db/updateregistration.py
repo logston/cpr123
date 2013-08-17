@@ -75,7 +75,8 @@ class UpdateRegistration():
         self.reg.save()
 
     def update(self):
-        """Run update i"""
+        """Retrun updated Registration object"""
         d = self.conditioner.registration_details(self.fetch)
         self.insert_details(d)
         UpdateCheckRegistration.objects.create(registration_pk=self.reg)
+        return self.reg

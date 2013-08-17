@@ -104,22 +104,24 @@ class Registration(models.Model):
             choices=types, 
             default='', 
             blank=True)
-    first_name = models.CharField(max_length=32, blank=True)
-    last_name = models.CharField(max_length=32, blank=True)
-    email_address = models.EmailField(blank=True)
+    first_name = models.CharField(max_length=32, null=True, blank=True)
+    last_name = models.CharField(max_length=32, null=True, blank=True)
+    email_address = models.EmailField(null=True, blank=True)
     primary_phone = models.CharField(
-            max_length=16, 
+            max_length=16,
+            null=True,
             blank=True,
             validators=[validate_pnum])
     alternate_phone = models.CharField(
             max_length=16, 
+            null=True,
             blank=True,
             validators=[validate_pnum])
     mailing_address = models.ForeignKey(
             Address, related_name='mailing', null=True, blank=True)
     billing_address = models.ForeignKey(
             Address, related_name='billing', null=True, blank=True)
-    promo_code = models.CharField(max_length=16, blank=True)
+    promo_code = models.CharField(max_length=16, null=True, blank=True)
     book_choices = (
             ('', ''),
             ('N','Not needed'), 
@@ -133,10 +135,10 @@ class Registration(models.Model):
     book_pickup_date = models.DateField(null=True, blank=True)
     total_charge = models.DecimalField(
             max_digits=6, decimal_places=2, null=True, blank=True)
-    hear = models.CharField(max_length=128, blank=True)
+    hear = models.CharField(max_length=128, null=True, blank=True)
     return_client = models.NullBooleanField(default=False)
-    comments = models.TextField(blank=True)
-    codes = models.CharField(max_length=128, blank=True)
+    comments = models.TextField(null=True, blank=True)
+    codes = models.CharField(max_length=128, null=True, blank=True)
     status_choices = (
             ('',''),
             ('P','Pending'),
@@ -150,8 +152,8 @@ class Registration(models.Model):
             default='',
             blank=True)
     checked_in = models.NullBooleanField()
-    test_score = models.CharField(max_length=8, blank=True)
-    certficate_number = models.CharField(max_length=16, blank=True)
+    test_score = models.CharField(max_length=8, null=True, blank=True)
+    certficate_number = models.CharField(max_length=16, null=True, blank=True)
     remediation_scheduled = models.ForeignKey(
             Class, 
             related_name='remediation_scheduled', 
@@ -165,6 +167,7 @@ class Registration(models.Model):
 class UpdateCheckClass(models.Model):
     class_pk = models.ForeignKey(Class, null=True, blank=True)
     time = models.DateTimeField(auto_now_add=True)
+    exception = models.NullBooleanField()
 
     def __str__(self):
         return str(self.class_pk) + ' @ ' + str(self.time)

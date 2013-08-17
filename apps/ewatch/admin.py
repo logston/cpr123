@@ -19,15 +19,19 @@ class RegistrationAdmin(admin.ModelAdmin):
     pass
 
 class UpdateCheckClassAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'time'
+    list_display = ('class_pk', 'time', 'exception')
+    search_fields = ('class_pk',)
 
 class UpdateCheckRegistrationAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'time'
+    list_display = ('registration_pk', 'time')
+    search_fields = ('registration_pk',)
 
 admin.site.register(Address)
 admin.site.register(Location)
 admin.site.register(Instructor)
 admin.site.register(Class, ClassAdmin)
 admin.site.register(Registration)
-admin.site.register(UpdateCheckClass)
-admin.site.register(UpdateCheckRegistration)
+admin.site.register(UpdateCheckClass, UpdateCheckClassAdmin)
+admin.site.register(UpdateCheckRegistration, UpdateCheckRegistrationAdmin)

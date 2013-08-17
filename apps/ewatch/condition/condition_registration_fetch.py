@@ -85,7 +85,8 @@ class ConditionRegistrationFetch():
             dout['total_charge'] = Decimal(din['total_charge'].strip('$'))
         if 'hear' in din:
             dout['hear'] = din['hear']
-        if 'return_client' in din and 'Yes' in din['return_client']:
+        if 'return_client' in din and din['return_client'] and \
+                'Yes' in din['return_client']:
             dout['return_client'] = True
         else:
             dout['return_client'] = False

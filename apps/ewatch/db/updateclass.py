@@ -65,4 +65,5 @@ class UpdateClass():
         self.insert_details(d)
         r = self.conditioner.class_registrations(self.fetch['registrations'])
         self.insert_registrations(r)
-        UpdateCheckClass.objects.create(class_pk=self.class_)
+        return self.class_
+        #UpdateCheckClass.objects.create(class_pk=self.class_)
