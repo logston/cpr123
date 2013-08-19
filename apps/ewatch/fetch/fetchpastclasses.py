@@ -4,16 +4,19 @@
 from datetime import datetime
 import time
 
+from django.utils import timezone
+
 from bs4 import BeautifulSoup
 
 from apps.ewatch.fetch.fetch import Fetch
+from libs.ref.timezones import EST
 
 class FetchPastClasses(Fetch):
     """Get past classes within interval"""
     
     past_classes_url = '/admin/past-classes.aspx'
 
-    def fetch_between(self, start_date, end_date=datetime.today()):
+    def fetch_between(self, start_date, end_date=timezone.now()):
         """Return past classes html"""
         # first make call to /admin/past-classes.apsx to get current inputs
         response = self.make_request(self.past_classes_url)
@@ -22,12 +25,14 @@ class FetchPastClasses(Fetch):
 
         date_format = '%m/%d/%Y'
         # if data show that the first request covers needs, return response
-        sdate_cj = datetime.strptime(
+        sdate = datetime.strptime(
                 data['ctl00$mainContent$sdate'], date_format)
-        edate_cj = datetime.strptime(
+        sdate = sdate.replace(tzinfo=EST())
+        edate = datetime.strptime(
                 data['ctl00$mainContent$edate'], date_format)
+        edate = edate.replace(tzinfo=EST())
         
-        if start_date >= sdate_cj and end_date <= edate_cj:
+        if start_date >= sdate and end_date <= edate:
             #request satisfied. No second request made
             return response_html
 

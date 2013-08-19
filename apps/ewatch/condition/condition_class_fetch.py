@@ -34,10 +34,8 @@ class ConditionClassFetch():
         if 'client' in din:
             dout['client'] = din['client']
         if 'location' in din:
-            try:
-                dout['location'] = Location.objects.get(name=din['location'])
-            except:
-                dout['location'] = din['location']
+            dout['location'] = Location.objects.get_or_create(
+                    name=din['location'])[0]
         if 'instructor' in din: 
             i = din['instructor'].split()
             i_list = Instructor.objects.filter(first_name__icontains=i[0])

@@ -13,6 +13,7 @@ class Fetch():
 
     def __init__(self, cookiejar_file=cookiejar_file_path):
         self.origin = 'https://www.enrollware.com/'
+        self.login_path = '/admin/login.aspx'
         self.cj = http.cookiejar.LWPCookieJar(cookiejar_file)
         try:    
             self.cj.load()
@@ -24,7 +25,7 @@ class Fetch():
     def make_request(self, action, data=None):
         """Return html of request"""
         response = self.call_opener(action, data)
-        if '/admin/login.aspx' in response.geturl():
+        if self.login_path in response.geturl():
             # client has be rerouted to login
             login_response = self.login(response)
             response_parse = urllib.parse.urlparse(response.geturl())
