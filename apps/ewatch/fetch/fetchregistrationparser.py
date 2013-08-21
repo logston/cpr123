@@ -16,7 +16,8 @@ class FetchRegistrationParser():
                         table['id'] == 'mainContent_certType':
                     continue
                 tables.append(table)
-            self.registration_edit_table = tables[0]
+            table_0 = tables[0] if tables else None
+            self.registration_edit_table = table_0
         return self.registration_edit_table
 
     def _get_select_tag_values(self, selects):
@@ -175,5 +176,7 @@ class FetchRegistrationParser():
 
     def get_all_registration_info(self):
         t = self._get_registration_edit_table(self.soup)
+        if not t:
+            return {}
         details = self.get_details_dict(t)
         return details 

@@ -28,6 +28,7 @@ def is_working_hours():
     hr = dt.hour
     if (hr>=9 and hr<18) and (wd>=0 and wd<=4):
         return True
+    #return True
     return False
 
 def update_class_and_registrations(enrollware_class_id=None):

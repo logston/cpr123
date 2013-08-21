@@ -44,7 +44,6 @@ def update_class(enrollware_class_id=None):
                 if not class_ in updated_class_pks:
                     enrollware_class_id = class_.enrollware_id
                     break
-    
      
     time.sleep(random.random()*15) # sleep for a random number of seconds
 

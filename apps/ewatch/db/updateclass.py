@@ -61,9 +61,18 @@ class UpdateClass():
                 pass
 
     def update(self):
+        if not self.fetch['details'] and not self.fetch['registrations']:
+            # no values found, must have been removed
+            self.class_.removed = True
+            self.class_.save()
+            return self.class_
         d = self.conditioner.class_details(self.fetch['details'])
         self.insert_details(d)
         r = self.conditioner.class_registrations(self.fetch['registrations'])
         self.insert_registrations(r)
         return self.class_
         #UpdateCheckClass.objects.create(class_pk=self.class_)
+
+if __name__ == '__main__':
+    import sys
+    UpdateClass(sys.argv[1]).update()

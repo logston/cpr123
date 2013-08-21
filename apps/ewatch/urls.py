@@ -4,4 +4,5 @@ from apps.ewatch import views
 
 urlpatterns = patterns('',
         url(r'^$', views.index),
+        url(r'^list_classes/$', views.list_classes),
         )

@@ -89,7 +89,10 @@ class FetchParser():
 
     def get_details_dict_from_class_id(self):
         """Return a dictionary of class details"""
-        tbody = self._get_class_edit_tables(self.soup)[1]
+        tables = self._get_class_edit_tables(self.soup)
+        if len(tables) < 2:
+            return {}
+        tbody = tables[1]
         details = {}
         for tr in tbody.find_all('tr'):
             selects = tr.find_all('select')
@@ -148,7 +151,10 @@ class FetchParser():
 
     def get_registration_ids_and_times(self):
         """Return a list of tuples of reg ids and times"""
-        tbody = self._get_class_edit_tables(self.soup)[0].tbody
+        tables = self._get_class_edit_tables(self.soup)
+        if not tables:
+            return []
+        tbody = tables[0].tbody
         regs = []
         for tr in tbody.find_all('tr'):
             regs.append(self._get_reg_id_and_time(tr))
@@ -157,4 +163,5 @@ class FetchParser():
     def get_all_class_info(self):
         details = self.get_details_dict_from_class_id()
         regis = self.get_registration_ids_and_times()
-        return {'registrations':regis, 'details':details}
+        return {'registrations':regis, 
+                'details':details}

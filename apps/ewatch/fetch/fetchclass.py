@@ -10,4 +10,6 @@ class FetchClass(Fetch):
                 str(class_id)
         response = self.make_request(action)
         parser = FetchParser(response.read())
-        return parser.get_all_class_info()
+        r = parser.get_all_class_info()
+        r.update({'response':response})
+        return r
