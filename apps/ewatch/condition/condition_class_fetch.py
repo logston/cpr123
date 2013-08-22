@@ -36,17 +36,15 @@ class ConditionClassFetch():
         if 'location' in din:
             dout['location'] = Location.objects.get_or_create(
                     name=din['location'])[0]
-        if 'instructor' in din: 
-            i = din['instructor'].split()
-            i_list = Instructor.objects.filter(first_name__icontains=i[0])
-            for instructor in i_list:
-                if instructor.last_name == ' '.join(i[1:]):
-                    dout['instructor'] = instructor
+        if 'instructor' in din:
+            for i in Instructor.objects.all():
+                if str(i) == din['instructor']:
+                    dout['instructor'] = i
         if 'time' in din:
             dout['time'] = din['time']
         if 'max_students' in din:
             dout['max_students'] = int(din['max_students'])
-        if 'max_students_link' in din:
+        if 'max_students_link' in din and din['max_students_link']:
             try:
                 # get pk for other class
                 c = Class.objects.get(
