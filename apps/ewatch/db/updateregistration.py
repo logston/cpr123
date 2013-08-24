@@ -34,8 +34,10 @@ class UpdateRegistration():
                 self.reg.cert_type = det[1]
             if det[0] == 'first_name':
                 self.reg.first_name = det[1]
+                pass
             if det[0] == 'last_name':
                 self.reg.last_name = det[1]
+                pass
             if det[0] == 'email_address':
                 self.reg.email_address = det[1]
             if det[0] == 'primary_phone':

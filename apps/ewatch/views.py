@@ -33,6 +33,7 @@ def scrape_details(request):
 
 def tally_classes(request):
     c = {}
+
     return render_to_response('ewatch/tally_classes.html', c)
 
 def tally_regs(request):
@@ -41,4 +42,25 @@ def tally_regs(request):
 
 def tally_revenue(request):
     c = {}
+    # given month/year and location return revenue
+    # mulit line (locatino) plot
+    # year-month 
+
+    # for all classes get distinct years of classes
+
+    # for all years, get distinct months in those classes
+
+    # for all months, get 4 locations
+
+    # for all locations, get registrations
+
+    # for all registrations, get list revenue totals
+
+    loc_MN = Location.objects.get(name='Manhattan')
+    loc_LI = Location.objects.get(name='Long Island')
+    loc_KG = Location.objects.get(name='Queens Kew Gardens')
+
+
+
+
     return render_to_response('ewatch/tally_revenue.html', c)

@@ -6,12 +6,17 @@ from libs.ref.us_states import us_states
 
 # phone number regex
 pnum_pattern = re.compile(r'[0-9]{10}')
+pnumac_pattern = re.compile(r'[0-9]{3}')
 
 def validate_pnum(pnum):
     """Raise validation error if not a 10 digit phone number"""
     if not re.match(pnum_pattern, pnum):
         raise ValidationError(u'%s is not a valid phone number'%pnum)
 
+def validate_pnumac(pnumac):
+    """Raise ValidationError if not a 3 digit area code"""
+    if not re.match(pnumac_pattern, pnumac):
+        raise ValidationError(u'%s is not a valid area code'%pnumac)
 
 class Address(models.Model):
     address_1 = models.CharField(max_length=64, blank=True)
@@ -104,23 +109,42 @@ class Registration(models.Model):
             choices=types, 
             default='', 
             blank=True)
+    # no longer used for client safety
     first_name = models.CharField(max_length=32, null=True, blank=True)
+    # no longer used for client safety
     last_name = models.CharField(max_length=32, null=True, blank=True)
+    # no lionger used for client safety   
     email_address = models.EmailField(null=True, blank=True)
+    email_domain = models.CharField(max_length=64, null=True, blank=True)
+    # no longer used for security reasons
     primary_phone = models.CharField(
             max_length=16,
             null=True,
             blank=True,
             validators=[validate_pnum])
+    primary_phone_area_code = models.CharField(
+        max_length=4,
+        null=True,
+        blank=True,
+        validators=[validate_pnumac])
+    # no longer used for security reasons
     alternate_phone = models.CharField(
             max_length=16, 
             null=True,
             blank=True,
             validators=[validate_pnum])
+    alternate_phone_area_code = models.CharField(
+        max_length=4,
+        null=True,
+        blank=True,
+        validators=[validate_pnumac])
+    # no longer used for security reasons
     mailing_address = models.ForeignKey(
             Address, related_name='mailing', null=True, blank=True)
+    # no longer used for security reasons
     billing_address = models.ForeignKey(
             Address, related_name='billing', null=True, blank=True)
+    
     promo_code = models.CharField(max_length=16, null=True, blank=True)
     book_choices = (
             ('', ''),
