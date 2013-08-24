@@ -41,6 +41,8 @@ class UpdateRegistration():
             if det[0] == 'email_address':
                 #self.reg.email_address = det[1]
                 pass
+            if det[0] == 'email_domain':
+                self.reg.email_domain = det[1]
             if det[0] == 'primary_phone':
                 #self.reg.primary_phone = det[1]
                 pass
