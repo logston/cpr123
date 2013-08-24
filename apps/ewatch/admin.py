@@ -16,7 +16,12 @@ class ClassAdmin(admin.ModelAdmin):
     search_fields = ('enrollware_id',)
 
 class RegistrationAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        'enrollware_id', 
+        'class_pk', 
+        'primary_phone_area_code', 
+        'email_domain')
+    search_fields = ('enrollware_id',)
 
 class UpdateCheckClassAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
@@ -32,6 +37,6 @@ admin.site.register(Address)
 admin.site.register(Location)
 admin.site.register(Instructor)
 admin.site.register(Class, ClassAdmin)
-admin.site.register(Registration)
+admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(UpdateCheckClass, UpdateCheckClassAdmin)
 admin.site.register(UpdateCheckRegistration, UpdateCheckRegistrationAdmin)
