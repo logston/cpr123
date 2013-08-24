@@ -33,17 +33,24 @@ class UpdateRegistration():
             if det[0] == 'cert_type':
                 self.reg.cert_type = det[1]
             if det[0] == 'first_name':
-                self.reg.first_name = det[1]
+                #self.reg.first_name = det[1]
                 pass
             if det[0] == 'last_name':
-                self.reg.last_name = det[1]
+                #self.reg.last_name = det[1]
                 pass
             if det[0] == 'email_address':
-                self.reg.email_address = det[1]
+                #self.reg.email_address = det[1]
+                pass
             if det[0] == 'primary_phone':
-                self.reg.primary_phone = det[1]
+                #self.reg.primary_phone = det[1]
+                pass
+            if det[0] == 'primary_phone_area_code':
+                self.reg.primary_phone_area_code = det[1]
             if det[0] == 'alternate_phone':
-                self.reg.alternate_phone = det[1]
+                #self.reg.alternate_phone = det[1]
+                pass
+            if det[0] == 'alternate_phone_area_code':
+                self.reg.alternate_phone_area_code = det[1]
             if det[0] == 'mailing':
                 self.reg.mailing_address = det[1]
             if det[0] == 'billing':

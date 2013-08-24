@@ -21,6 +21,14 @@ class ConditionRegistrationFetch():
         """Return a Class object based on id"""
         return Class.objects.get_or_create(enrollware_id=int(class_id))
 
+    def _getac(self, pn):
+        if len(pn) == 10:
+            return pn[:3]
+        elif len(pn) == 11:
+            return pn[1:4]
+        else:
+            return '000'
+
     def _condition_phone_number(self, pn):
         """Return a phone number of the format 1234567890"""
         ret_pn = ''
@@ -31,8 +39,8 @@ class ConditionRegistrationFetch():
 
     def _condition_address(self, a_dict):
         """Return an Address object based on a_dict"""
-        a1 = a_dict['address_1'] if 'address_1' in a_dict else ''
-        a2 = a_dict['address_2'] if 'address_2' in a_dict else ''
+        a1 = '' #a_dict['address_1'] if 'address_1' in a_dict else ''
+        a2 = '' #a_dict['address_2'] if 'address_2' in a_dict else ''
         c = a_dict['city'] if 'city' in a_dict else ''
         s = a_dict['state'] if 'state' in a_dict else 'NY'
         z = a_dict['zip'] if 'zip' in a_dict else ''
@@ -64,12 +72,26 @@ class ConditionRegistrationFetch():
             dout['last_name'] = din['last_name']
         if 'email_address' in din:
             dout['email_address'] = din['email_address']
+        if 'email_address' in din:
+            es = din['email_address'].split('@')
+            if es[1]:
+                dout['email_domain'] = es[1]
         if 'primary_phone' in din:
             dout['primary_phone'] = \
                     self._condition_phone_number(din['primary_phone'])
         if 'alternate_phone' in din:
             dout['alternate_phone'] = \
                     self._condition_phone_number(din['alternate_phone'])
+        if 'primary_phone' in din:
+            dout['primary_phone_area_code'] = \
+                    self._getac(
+                        self._condition_phone_number(
+                            din['primary_phone']))
+        if 'alternate_phone' in din:
+            dout['alternate_phone_area_code'] = \
+                    self._getac(
+                        self._condition_phone_number(
+                            din['alternate_phone']))
         if 'mailing' in din and din['mailing']:
             dout['mailing'] = self._condition_address(din['mailing'])
         if 'billing' in din and din['billing']:
