@@ -18,10 +18,15 @@ class ClassAdmin(admin.ModelAdmin):
 class RegistrationAdmin(admin.ModelAdmin):
     list_display = (
         'enrollware_id', 
-        'class_pk', 
+        'class_eid', 
         'primary_phone_area_code', 
         'email_domain')
     search_fields = ('enrollware_id',)
+    raw_id_fields = ('mailing_address', 'billing_address',)
+
+    def class_eid(self, reg):
+        return '%s' % (reg.class_pk.enrollware_id)
+    class_eid.short_description = 'Class Enrollware ID'
 
 class UpdateCheckClassAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'

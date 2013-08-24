@@ -28,10 +28,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=16, blank=True)
 
     def __str__(self):
-        address_2 = self.address_2 if self.address_2 else ''
         return ', '.join([
-                self.address_1,
-                address_2,
                 self.city,
                 self.state,
                 self.zip_code])
@@ -110,29 +107,29 @@ class Registration(models.Model):
             default='', 
             blank=True)
     # no longer used for client safety
-    first_name = models.CharField(max_length=32, null=True, blank=True)
+    #first_name = models.CharField(max_length=32, null=True, blank=True)
     # no longer used for client safety
-    last_name = models.CharField(max_length=32, null=True, blank=True)
+    #last_name = models.CharField(max_length=32, null=True, blank=True)
     # no lionger used for client safety   
-    email_address = models.EmailField(null=True, blank=True)
+    #email_address = models.EmailField(null=True, blank=True)
     email_domain = models.CharField(max_length=64, null=True, blank=True)
     # no longer used for security reasons
-    primary_phone = models.CharField(
-            max_length=16,
-            null=True,
-            blank=True,
-            validators=[validate_pnum])
+    #primary_phone = models.CharField(
+     #       max_length=16,
+     #       null=True,
+     #       blank=True,
+     #       validators=[validate_pnum])
     primary_phone_area_code = models.CharField(
         max_length=4,
         null=True,
         blank=True,
         validators=[validate_pnumac])
     # no longer used for security reasons
-    alternate_phone = models.CharField(
-            max_length=16, 
-            null=True,
-            blank=True,
-            validators=[validate_pnum])
+    #alternate_phone = models.CharField(
+     #       max_length=16, 
+     #       null=True,
+     #       blank=True,
+     #       validators=[validate_pnum])
     alternate_phone_area_code = models.CharField(
         max_length=4,
         null=True,
