@@ -56,7 +56,8 @@ class ConditionClassFetch():
         if 'listing' in din:
             dout['listing'] = True if din['listing'] == 'checked' else False
         if 'price' in din:
-            dout['price'] = Decimal(din['price'])
+            p = din['price'].replace(',', '')
+            dout['price'] = Decimal(p)
         if 'book_price' in din:
             dout['book_price'] = Decimal(din['book_price'])
         if 'student_manikin_ratio' in din:
