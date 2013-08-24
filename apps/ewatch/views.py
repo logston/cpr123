@@ -25,7 +25,8 @@ def scrape_details(request):
     tdata['regs_scraped'] = UpdateCheckRegistration.objects.all().count()
     tdata['regs_scraped_success'] = \
         Registration.objects.\
-            exclude(first_name='').exclude(first_name=None).count()
+            exclude(total_charge=None).\
+            count()
     tdata['percent_regs_scrape_success'] = \
         round((tdata['regs_scraped_success']/tdata['regs_scraped']) * 100)
     
