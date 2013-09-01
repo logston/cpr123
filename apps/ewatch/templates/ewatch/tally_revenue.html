@@ -8,8 +8,35 @@
 
     <div class="container">
 
-      <hr>
+      <h1>Revenue by Month and Location</h1>
 
+      <p>
+        This table is updated every 3 minutes M-F, 9am - 6pm. The totals do not reflect all of CPR123 histroy. The totals only reflect what has been collected from enrollware prior to the last collection time.
+      </p>
+
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Year / Month</th>
+            <th>Manhattan</th>
+            <th>Long Island</th>
+            <th>Kew Gardens</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for dt, locs in stats_by_month_and_loc %}
+          <tr>
+            <td>{{ dt|date:"Y / m" }}</td>    
+          {% for rev in locs %}
+            <td>
+              {{ rev|floatformat:2 }}
+            </td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      
       <footer>
         <p>&copy; Paul Logston 2013</p>
       </footer>

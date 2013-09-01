@@ -21,3 +21,14 @@ class EST(tzinfo):
 
     def dst(self, dt):
         return timedelta(hours=0)
+
+class PST(tzinfo):
+    """PST"""
+    def utcoffset(self, dt):
+        return timedelta(hours=-7)
+
+    def tzname(self, dt):
+        return "PST"
+
+    def dst(self, dt):
+        return timedelta(hours=0)
