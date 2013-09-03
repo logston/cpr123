@@ -84,7 +84,7 @@ class Class(models.Model):
     student_manikin_ratio = models.PositiveSmallIntegerField(
             choices=STUDENT_MANIKIN_RATIOS,
             default=1)
-    total_hours = models.PositiveSmallIntegerField(null=True)
+    total_hours = models.FloatField(null=True)
     time_added = models.DateTimeField(auto_now_add=True)
     removed = models.NullBooleanField()
 

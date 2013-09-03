@@ -155,6 +155,8 @@ class FetchParser():
         if not tables:
             return []
         tbody = tables[0].tbody
+        if not tbody:
+            return []
         regs = []
         for tr in tbody.find_all('tr'):
             regs.append(self._get_reg_id_and_time(tr))

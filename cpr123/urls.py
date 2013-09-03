@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(subdir+r'admin/', include(admin.site.urls)),
-    
+    url(subdir+r'git/pull/', 'gitpull.pull'),
     url(subdir+r'', include('apps.ewatch.urls')),
 
 )

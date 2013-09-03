@@ -8,9 +8,12 @@ priv/
 # until I find a better way to isolate private info
 cpr123/settings.py
 
-## sqlite3
+## DBs/backups
 *.db
 .DS_Store
+*.bak
+
+backup_db.sh
 
 ## South migrations
 migrations/
@@ -18,6 +21,10 @@ migrations/
 ## compiled
 *.pyc
 *.pyo
+
+## gitpull
+gitpull.sh
+gitpull.py
 
 ## django admin stuff
 static/admin/
