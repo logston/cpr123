@@ -64,5 +64,5 @@ class ConditionClassFetch():
             dout['student_manikin_ratio'] = int(
                     din['student_manikin_ratio'].split(':')[0])
         if 'total_hours' in din and din['total_hours']:
-            dout['total_hours'] = int(din['total_hours'])  
+            dout['total_hours'] = float(din['total_hours'])  
         return dout
