@@ -1,5 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal
+import logging
 
 from django.shortcuts import render_to_response
 
@@ -36,36 +37,94 @@ def scrape_details(request):
     
     return render_to_response('ewatch/scrape_details.html', tdata)
 
+def main_locations():
+    loc_MN = Location.objects.get(name='Manhattan')
+    loc_LI = Location.objects.get(name='Long Island')
+    loc_KG = Location.objects.get(name='Queens Kew Gardens')
+    return (loc_MN, loc_LI, loc_KG)
 
 def tally_classes(request):
     c = {}
+
+    locs = main_locations()
     
     # for all classes, get distinct years/months in those classes
     dts = Class.objects.dates('time', 'month', order='DESC')
-    c['months'] = [(dt.year, dt.month) for dt in dts]
+    # for all classse, get distinct course types
+    courses = Class.objects.values('course').distinct()
     
-    # for all months, get class count
-    c['class_count'] = {}
-    for mo in c['months']:
-        c['class_count'][mo] = Class.objects.filter(time__year=mo[0]).\
-            filter(time__month=mo[1]).count()
+    c['class_tallies_by_month_and_loc'] = []
+    for dt in dts:
+        # this line is a hack to get months to show up correctly
+        dt = dt.astimezone(UTC()) + timedelta(hours=6)
+        stats_by_month_and_loc = []
+        for course in courses:
+            course_tallies = [course['course'].replace('â\x84¢', '')]
+            for loc in locs:
+                tally = Class.objects.\
+                    filter(time__year=dt.year).\
+                    filter(time__month=dt.month).\
+                    filter(course=course_tallies[0]).\
+                    filter(location=loc).count()
+                course_tallies.append(tally)
+            if sum(course_tallies[1:]):
+                stats_by_month_and_loc.append(course_tallies)
+        c['class_tallies_by_month_and_loc'].append([dt, sorted(stats_by_month_and_loc)])
     
     return render_to_response('ewatch/tally_classes.html', c)
 
-
-def tally_regs(request):
+def tally_classes2(request):
     c = {}
-    return render_to_response('ewatch/tally_regs.html', c)
+
+    locs = main_locations()
+
+    classes = [class_ for class_ in Class.objects.all()]
+    
+    # for all classes, get distinct years/months in those classes
+    dts = Class.objects.dates('time', 'month', order='DESC')
+    # for all classse, get distinct course types
+    courses = Class.objects.values('course').distinct()
+    
+    c['class_tallies_by_month_and_loc'] = []
+    for dt in dts:
+        # this line is a hack to get months to show up correctly
+        dt = dt.astimezone(UTC()) + timedelta(hours=6)
+        
+        stats_by_month_and_loc = []
+        for course in courses:
+            course_tallies = [course['course'].replace('â\x84¢', '')]
+            for loc in locs:
+                # count classes that qualify
+                course_tallies.append(loc_tally(classes, dt, course['course'], loc))
+            if sum(course_tallies[1:]):
+                stats_by_month_and_loc.append(course_tallies)
+        c['class_tallies_by_month_and_loc'].append([dt, sorted(stats_by_month_and_loc)])
+    
+    return render_to_response('ewatch/tally_classes.html', c)
+
+def loc_tally(classes, dt, course, loc):
+    if not classes or not dt or not course or not loc:
+        return 0
+    cnt = 0
+    for class_ in classes:
+        if not class_ or not class_.time or not class_.course or not class_.location:
+            continue
+        if not dt.year == class_.time.year:
+            continue
+        if not dt.month == class_.time.month:
+            continue
+        if not course == class_.course:
+            continue
+        if not loc == class_.location:
+            continue
+        cnt += 1
+    return cnt
 
 
 def tally_revenue(request):
     c = {}
     # given month/year and location return revenue
-
-    loc_MN = Location.objects.get(name='Manhattan')
-    loc_LI = Location.objects.get(name='Long Island')
-    loc_KG = Location.objects.get(name='Queens Kew Gardens')
-    locs = (loc_MN, loc_LI, loc_KG)
+    locs = main_locations()
 
     # for all classes, get distinct years/months in those classes
     dts = Class.objects.dates('time', 'month', order='DESC')

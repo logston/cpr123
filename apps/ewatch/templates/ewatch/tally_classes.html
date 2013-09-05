@@ -8,8 +8,34 @@
 
     <div class="container">
 
+      <h1>Class Tally by Month and Location</h1>
 
-      <hr>
+      <p>
+        This table is updated every 3 minutes M-F, 9am - 6pm. The totals do not reflect all of CPR123 histroy. The totals only reflect what has been collected from enrollware prior to the last collection time. These numbers are also constrained by the success of all class scrapes. Details on the success of those scrapes can be found at the 'Scrape Details' link above.
+      </p>
+
+      {% for month in class_tallies_by_month_and_loc %}
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Courses in: {{ month.0|date:"Y / m" }}</th>
+            <th>Manhattan</th>
+            <th>Long Island</th>
+            <th>Kew Gardens</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in month.1 %}
+          <tr>
+            {% for tally in course %}
+            <td>{{ tally }}</td>    
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endfor %}
+      
 
       <footer>
         <p>&copy; Paul Logston 2013</p>
