@@ -76,6 +76,8 @@ def tally_classes(request):
 def tally_classes2(request):
     c = {}
 
+    c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
+
     locs = main_locations()
 
     classes = [class_ for class_ in Class.objects.all()]
@@ -123,6 +125,9 @@ def loc_tally(classes, dt, course, loc):
 
 def tally_revenue(request):
     c = {}
+
+    c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
+    
     # given month/year and location return revenue
     locs = main_locations()
 
