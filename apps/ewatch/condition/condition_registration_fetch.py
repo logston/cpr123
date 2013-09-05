@@ -74,7 +74,7 @@ class ConditionRegistrationFetch():
             dout['email_address'] = din['email_address']
         if 'email_address' in din:
             es = din['email_address'].split('@')
-            if es[1]:
+            if es and len(es) > 1 and es[1]:
                 dout['email_domain'] = es[1]
         if 'primary_phone' in din:
             dout['primary_phone'] = \

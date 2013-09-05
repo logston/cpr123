@@ -22,16 +22,18 @@ from apps.ewatch.db.updateclass import UpdateClass
 from apps.ewatch.db.updateregistration import UpdateRegistration
 from libs.ref.timezones import EST
 
-def is_working_hours():
+def is_working_hours(manual_override=False):
+    if manual_override:
+        return True
     dt = datetime.now(EST())
     wd = dt.weekday()
     hr = dt.hour
     if (hr>=9 and hr<18) and (wd>=0 and wd<=4):
         return True
-    #return True
     return False
 
-def update_class_and_registrations(enrollware_class_id=None):
+def update_class_and_registrations(enrollware_class_id=None, 
+                                   manual_override=False):
     """Finds next Class valid for updating and updates it"""
     if not enrollware_class_id:
         updates = UpdateCheckClass.objects.order_by('-time').all()
@@ -74,10 +76,13 @@ def update_class_and_registrations(enrollware_class_id=None):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2 and sys.argv[1] == 'manual':
+        update_class_and_registrations()
+        sys.exit(0)
+    if len(sys.argv) == 2:
+        update_class_and_registrations(sys.argv[1], True) 
+        sys.exit(0)
     if is_working_hours():
-        if len(sys.argv) == 2:
-            update_class_and_registrations(sys.argv[1])
-        else:
-            update_class_and_registrations()
+        update_class_and_registrations()
     else:
         sys.exit(0)
