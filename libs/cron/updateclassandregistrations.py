@@ -11,9 +11,12 @@ This model defines a function that:
 """
 
 from datetime import datetime
+from datetime import timedelta
 import random
 import sys
 import time
+
+from django.utils import timezone
 
 from apps.ewatch.models import Class, Registration
 from apps.ewatch.models import UpdateCheckClass, UpdateCheckRegistration
@@ -36,7 +39,8 @@ def update_class_and_registrations(enrollware_class_id=None,
                                    manual_override=False):
     """Finds next Class valid for updating and updates it"""
     if not enrollware_class_id:
-        updates = UpdateCheckClass.objects.order_by('-time').all()
+        updates = UpdateCheckClass.objects.order_by('-time').\
+            filter(time__lte=timezone.now()-timedelta(days=7)).all()
         if updates and updates[0].exception == True:
             # immediatley exit since last update failed
             sys.exit(1)
