@@ -12,6 +12,9 @@ def index(request):
 
 def scrape_details(request):
     tdata = {}
+
+    tdata['last_class'] = Class.objects.order_by('-time').all()[0].time
+
     # percent of past classes scraped
     scraped_c = UpdateCheckClass.objects.values_list('class_pk', flat=True)    
     # set the list so duplicates are removed
@@ -46,6 +49,8 @@ def main_locations():
 def tally_classes(request):
     c = {}
 
+    c['last_class'] = Class.objects.order_by('-time').all()[0].time
+
     locs = main_locations()
     
     # for all classes, get distinct years/months in those classes
@@ -77,6 +82,7 @@ def tally_classes2(request):
     c = {}
 
     c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
+    c['last_class'] = Class.objects.order_by('-time').all()[0].time
 
     locs = main_locations()
 
@@ -127,6 +133,7 @@ def tally_revenue(request):
     c = {}
 
     c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
+    c['last_class'] = Class.objects.order_by('-time').all()[0].time
     
     # given month/year and location return revenue
     locs = main_locations()
