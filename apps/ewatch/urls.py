@@ -8,4 +8,5 @@ urlpatterns = patterns('',
         url(r'^tally_classes/$', views.tally_classes2),
 		#url(r'^tally_regs/$', views.tally_regs),
 		url(r'^tally_revenue/$', views.tally_revenue),
+		url(r'^enrollment_by_zip/$', views.heatmap)
         )

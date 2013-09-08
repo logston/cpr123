@@ -1,19 +1,28 @@
 from django.contrib import admin
 from apps.ewatch.models import *
 
+
+class ZipGeocodeAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(ZipGeocode, ZipGeocodeAdmin)
+
 class AddressAdmin(admin.ModelAdmin):
     pass
+admin.site.register(Address)
 
 class LocationAdmin(admin.ModelAdmin):
     pass
+admin.site.register(Location)
 
 class InstructorAdmin(admin.ModelAdmin):
     pass
+admin.site.register(Instructor)
 
 class ClassAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
     list_display = ('enrollware_id', 'course', 'time', 'location')
     search_fields = ('enrollware_id',)
+admin.site.register(Class, ClassAdmin)
 
 class RegistrationAdmin(admin.ModelAdmin):
     list_display = (
@@ -27,21 +36,22 @@ class RegistrationAdmin(admin.ModelAdmin):
     def class_eid(self, reg):
         return '%s' % (reg.class_pk.enrollware_id)
     class_eid.short_description = 'Class Enrollware ID'
+admin.site.register(Registration, RegistrationAdmin)
 
 class UpdateCheckClassAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
     list_display = ('class_pk', 'time', 'exception')
     search_fields = ('class_pk',)
+admin.site.register(UpdateCheckClass, UpdateCheckClassAdmin)
 
 class UpdateCheckRegistrationAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
     list_display = ('registration_pk', 'time')
     search_fields = ('registration_pk',)
-
-admin.site.register(Address)
-admin.site.register(Location)
-admin.site.register(Instructor)
-admin.site.register(Class, ClassAdmin)
-admin.site.register(Registration, RegistrationAdmin)
-admin.site.register(UpdateCheckClass, UpdateCheckClassAdmin)
 admin.site.register(UpdateCheckRegistration, UpdateCheckRegistrationAdmin)
+
+
+
+
+
+

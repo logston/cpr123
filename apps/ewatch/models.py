@@ -18,6 +18,35 @@ def validate_pnumac(pnumac):
     if not re.match(pnumac_pattern, pnumac):
         raise ValidationError(u'%s is not a valid area code'%pnumac)
 
+class GetOrNoneManager(models.Manager):
+    """
+    Adds get_or_none method to objects
+    """
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
+
+
+class ZipGeocode(models.Model):
+    """Connect Zip with a Lat and Long"""
+    zip_code = models.CharField(max_length=16, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    objects = GetOrNoneManager()
+
+    def __str__(self):
+        return ''.join([
+            self.zip_code,
+            '  (',
+            str(self.latitude),
+            ', ',
+            str(self.longitude),
+            ')'])
+
+
 class Address(models.Model):
     address_1 = models.CharField(max_length=64, blank=True)
     address_2 = models.CharField(max_length=64, blank=True)

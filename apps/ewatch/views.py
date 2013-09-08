@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import timedelta
 from decimal import Decimal
 import logging
@@ -5,7 +6,12 @@ import logging
 from django.shortcuts import render_to_response
 
 from apps.ewatch.models import *
+from libs.api.google_geocode import get_lat_long
 from libs.ref.timezones import UTC
+from libs.utils.validators import is_valid_zip as is_valid_zip
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def index(request):
     return render_to_response('ewatch/index.html')
@@ -156,3 +162,18 @@ def tally_revenue(request):
         c['stats_by_month_and_loc'].append((dt,loc_stats))
 
     return render_to_response('ewatch/tally_revenue.html', c)
+
+def heatmap(request):
+    c = {}
+    reg_mail_zips = Registration.objects.values('mailing_address__zip_code')
+    mailing_zips = [zcD['mailing_address__zip_code'][:5] for zcD in \
+        reg_mail_zips if zcD['mailing_address__zip_code'] and \
+        is_valid_zip(zcD['mailing_address__zip_code'][:5])]
+    zip_counter = Counter(mailing_zips)
+    #mcz_count = zip_counter.most_common(1)[0][1]
+    #zip_relative_probabi = [(zc, round((cnt/mcz_count), 3)) for zc, cnt in zip_counter.items()]
+    j = [get_lat_long(zc) for zc, cnt in zip_counter.items()]
+    c['mailing_zips'] = j
+    return render_to_response('ewatch/heatmap.html', c)
+
+
