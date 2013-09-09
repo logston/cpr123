@@ -31,7 +31,7 @@ class GetOrNoneManager(models.Manager):
 
 class ZipGeocode(models.Model):
     """Connect Zip with a Lat and Long"""
-    zip_code = models.CharField(max_length=16, blank=True)
+    zip_code = models.CharField(unique=True, max_length=16, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 

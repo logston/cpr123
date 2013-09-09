@@ -2,6 +2,8 @@ import json
 import logging
 import urllib.request
 
+import time
+
 from apps.ewatch.models import ZipGeocode
 
 logger = logging.getLogger(__name__)
@@ -9,6 +11,7 @@ logger = logging.getLogger(__name__)
 def fetch_json_from_google_api(zc):
     url = "http://maps.googleapis.com/maps/api/geocode/json?address="+\
         str(zc)+"&sensor=false"
+    time.sleep(1)
     urlp = urllib.request.urlopen(url)
     return urlp.read()
 
@@ -33,7 +36,6 @@ def fetch_new_zc(zc):
 
 def get_lat_long(zc):
     # see if lat/long is in db 
-    return zc
     zc_obj = ZipGeocode.objects.get_or_none(zip_code=zc)
     if not zc_obj:
         # if not, go get lat long from google

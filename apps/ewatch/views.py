@@ -169,11 +169,21 @@ def heatmap(request):
     mailing_zips = [zcD['mailing_address__zip_code'][:5] for zcD in \
         reg_mail_zips if zcD['mailing_address__zip_code'] and \
         is_valid_zip(zcD['mailing_address__zip_code'][:5])]
-    zip_counter = Counter(mailing_zips)
+    zip_counter = Counter(mailing_zips).most_common(200)
     #mcz_count = zip_counter.most_common(1)[0][1]
     #zip_relative_probabi = [(zc, round((cnt/mcz_count), 3)) for zc, cnt in zip_counter.items()]
-    j = [get_lat_long(zc) for zc, cnt in zip_counter.items()]
-    c['mailing_zips'] = j
+    llData = []
+    for zc, cnt in zip_counter:
+        ll = get_lat_long(zc)
+        for x in range(cnt):
+            llData.append(ll)
+    llStrs = []
+    for ll in llData:
+        llStrs.append('new google.maps.LatLng('+str(ll[0])+', '+str(ll[1])+')')
+
+    #c['llStr'] = ','.join(llStrs[:200])
+    c['lats_longs'] = llData
+
     return render_to_response('ewatch/heatmap.html', c)
 
 

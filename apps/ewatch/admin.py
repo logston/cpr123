@@ -3,7 +3,9 @@ from apps.ewatch.models import *
 
 
 class ZipGeocodeAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('zip_code',)
+    ordering = ['zip_code']
+    list_display = ('zip_code', 'latitude', 'longitude')
 admin.site.register(ZipGeocode, ZipGeocodeAdmin)
 
 class AddressAdmin(admin.ModelAdmin):
