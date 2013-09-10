@@ -3,6 +3,7 @@ from datetime import timedelta
 from decimal import Decimal
 import logging
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 
 from apps.ewatch.models import *
@@ -16,6 +17,7 @@ logger.setLevel(logging.DEBUG)
 def index(request):
     return render_to_response('ewatch/index.html')
 
+@login_required
 def scrape_details(request):
     tdata = {}
 

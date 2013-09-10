@@ -12,11 +12,11 @@ urlpatterns = patterns('',
     # url(r'^cpr123/', include('cpr123.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(subdir+r'admin/', include(admin.site.urls)),
     url(subdir+r'git/pull/', 'gitpull.pull'),
     url(subdir+r'', include('apps.ewatch.urls')),
-
+    url(subdir+r'login/$', 'django.contrib.auth.views.login', name="login")
 )
