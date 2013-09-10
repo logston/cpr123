@@ -1,7 +1,10 @@
 {% load static from staticfiles %}
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="utf-8">
-    <title>CPR123 Enrollment Watch</title>
+    <title>{% block title %}CPR123 Enrollment Watch{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A Django app for viewings stats on CPR123 class enrollment.">
     <meta name="author" content="Paul Logston">
@@ -20,4 +23,17 @@
     <!--[if lt IE 9]>
       <script src="{% static "js/html5shiv.js" %}"></script>
     <![endif]-->
-  </head>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    {% include "ewatch/nav.html" %}
+
+    <div class="container">
+        {% block container %}{% endblock %}
+      <footer>
+        <p>&copy; Paul Logston 2013</p>
+      </footer>
+    </div>
+</body>
+</html>
