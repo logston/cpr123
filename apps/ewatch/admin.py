@@ -43,7 +43,7 @@ admin.site.register(Registration, RegistrationAdmin)
 class UpdateCheckClassAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
     list_display = ('class_pk', 'time', 'exception')
-    search_fields = ('class_pk',)
+    search_fields = ('Class__enrollware_id',)
 admin.site.register(UpdateCheckClass, UpdateCheckClassAdmin)
 
 class UpdateCheckRegistrationAdmin(admin.ModelAdmin):
