@@ -39,15 +39,14 @@ def update_class_and_registrations(enrollware_class_id=None,
                                    manual_override=False):
     """Finds next Class valid for updating and updates it"""
     if not enrollware_class_id:
-        updates = UpdateCheckClass.objects.order_by('-time').\
-            filter(time__lte=timezone.now()-timedelta(days=7)).all()
+        updates = UpdateCheckClass.objects.order_by('-time').all()
         if updates and updates[0].exception == True:
             # immediatley exit since last update failed
             sys.exit(1)
         updated_class_pks = []
         # find a list of updated classes
         for update in updates:
-            if update.class_pk not in updated_class_pks:
+            if not update.class_pk in updated_class_pks:
                 updated_class_pks.append(update.class_pk)
         all_classes = Class.objects.order_by('-enrollware_id').all()
         
@@ -65,7 +64,6 @@ def update_class_and_registrations(enrollware_class_id=None,
     
     try:
         class_ = UpdateClass(enrollware_class_id).update()
-
         #class_ = Class.objects.get(enrollware_id=enrollware_class_id)
         registrations = Registration.objects.filter(class_pk=class_)
         for reg in registrations:
