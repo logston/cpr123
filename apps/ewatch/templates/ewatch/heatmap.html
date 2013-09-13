@@ -1,95 +1,68 @@
-{% load static from staticfiles %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>CPR123 Enrollment Watch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A Django app for viewings stats on CPR123 class enrollment.">
-    <meta name="author" content="Paul Logston">
-     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-     <script src="{% static "ewatch/js/bootstrap.min.js" %}"></script>
-     <!-- Le styles -->
-    <link href="{% static "ewatch/css/bootstrap.css" %}" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="{% static "ewatch/css/bootstrap-responsive.css" %}" rel="stylesheet">
+{% extends "ewatch/base.html" %}
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="{% static "js/html5shiv.js" %}"></script>
-    <![endif]-->
+{% block extra_head %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
+<script>
+  var map, pointarray, heatmap;
 
-    <script>
-      var map, pointarray, heatmap;
+  var llData = [{{ llStr }}];
 
-      var llData = [{{ llStr }}];
+  var llData = [
+    {% for ll in lats_longs %}
+      new google.maps.LatLng({{ ll.0 }}, {{ ll.1 }}),
+    {% endfor %}
+  ];
 
-      var llData = [
-        {% for ll in lats_longs %}
-          new google.maps.LatLng({{ ll.0 }}, {{ ll.1 }}),
-        {% endfor %}
-      ];
+  var nyc = new google.maps.LatLng(40.7, -73.75);
 
-      var nyc = new google.maps.LatLng(40.7, -73.75);
+  function initialize() {
+    var mapOptions = {
+      zoom: 11,
+      center: nyc,
+      mapTypeId: google.maps.MapTypeId.MAP
+    };
 
-      function initialize() {
-        var mapOptions = {
-          zoom: 11,
-          center: nyc,
-          mapTypeId: google.maps.MapTypeId.MAP
-        };
+    map = new google.maps.Map(document.getElementById('map_canvas'),
+        mapOptions);
 
-        map = new google.maps.Map(document.getElementById('map_canvas'),
-            mapOptions);
+    var pointArray = new google.maps.MVCArray(llData);
 
-        var pointArray = new google.maps.MVCArray(llData);
+    heatmap = new google.maps.visualization.HeatmapLayer({
+      data: pointArray
+    });
 
-        heatmap = new google.maps.visualization.HeatmapLayer({
-          data: pointArray
-        });
+    heatmap.setMap(map);
+    heatmap.setOptions({radius: 35, opacity: 0.50});
 
-        heatmap.setMap(map);
-        heatmap.setOptions({radius: 35, opacity: 0.50});
+  }
 
-      }
+  function toggleHeatmap() {
+    heatmap.setMap(heatmap.getMap() ? null : map);
+  }
 
-      function toggleHeatmap() {
-        heatmap.setMap(heatmap.getMap() ? null : map);
-      }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
+<style>
 
-    <style>
+  #map_canvas {
+    height: 100%;
+  }
 
-      #map_canvas {
-        height: 100%;
-      }
+  #map_canvas img {
+    max-width:none;
+  }
 
-      #map_canvas img {
-        max-width:none;
-      }
+  #panel {
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+  }
+</style>
+{% endblock %}
 
-      #panel {
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-      }
-    </style>
-  </head>
-  <body>
-
-
-    {% include "ewatch/nav.html" %}
-
-    <div class="container">
-
+{% block container %}
       <h1>Distribution of enrollment by mailing address</h1>
 
       <div id="panel">
@@ -99,12 +72,4 @@
       <div style="height: 550px;">
         <div id="map_canvas"></div>
       </div>
-
-      <footer>
-        <p>&copy; Paul Logston 2013</p>
-      </footer>
-
-    </div> <!-- /container -->
-
-  </body>
-</html>
+{% endblock %}

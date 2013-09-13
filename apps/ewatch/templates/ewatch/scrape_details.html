@@ -1,60 +1,45 @@
+{% extends "ewatch/base.html" %}
 {% load static from staticfiles %}
-<!DOCTYPE html>
-<html lang="en">
-  {% include "ewatch/head.html" %}
-  <body>
 
-    {% include "ewatch/nav.html" %}
-
-    <div class="container">
-
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="span3">
-          Class scrape coverage:
-        </div>
-        <div class="span4">
-          <div class="progress">
-            <div class="bar" style="width: {{ percent_classes_scraped }}%"></div>
-          </div>
-        </div>
-        <div class="span2">
-          {{ percent_classes_scraped }}% ({{ classes_scraped }} / {{ total_classes }})
-        </div>
-      </div>
-      <div class="row">
-        <div class="span3">
-          Success of Class scrapes:
-        </div>
-        <div class="span4">
-          <div class="progress">
-            <div class="bar" style="width: {{ percent_classes_scrape_success }}%"></div>
-          </div>
-        </div>
-        <div class="span2">
-          {{ percent_classes_scrape_success }}% ({{ classes_scrape_success }} / {{ classes_scraped }})
-        </div>
-      </div>
-      <div class="row">
-        <div class="span3">
-          Success of Registration scrapes:
-        </div>
-        <div class="span4">
-          <div class="progress">
-            <div class="bar" style="width: {{ percent_regs_scrape_success }}%"></div>
-          </div>
-        </div>
-        <div class="span2">
-          {{ percent_regs_scrape_success }}% ({{ regs_scraped_success }} / {{ regs_scraped }})
-        </div>
-      </div>
-      <hr>
-
-      <footer>
-        <p>&copy; Paul Logston 2013</p>
-      </footer>
-
-    </div> <!-- /container -->
-
-  </body>
-</html>
+{% block container %}
+<div class="row">
+  <div class="span3">
+    Class scrape coverage:
+  </div>
+  <div class="span4">
+    <div class="progress">
+      <div class="bar" style="width: {{ percent_classes_scraped }}%"></div>
+    </div>
+  </div>
+  <div class="span2">
+    {{ percent_classes_scraped }}% ({{ classes_scraped }} / {{ total_classes }})
+  </div>
+</div>
+<div class="row">
+  <div class="span3">
+    Success of Class scrapes:
+  </div>
+  <div class="span4">
+    <div class="progress">
+      <div class="bar" style="width: {{ percent_classes_scrape_success }}%"></div>
+    </div>
+  </div>
+  <div class="span2">
+    {{ percent_classes_scrape_success }}% ({{ classes_scrape_success }} / {{ classes_scraped }})
+  </div>
+</div>
+<div class="row">
+  <div class="span3">
+    Success of Registration scrapes:
+  </div>
+  <div class="span4">
+    <div class="progress">
+      <div class="bar" style="width: {{ percent_regs_scrape_success }}%"></div>
+    </div>
+  </div>
+  <div class="span2">
+    {{ percent_regs_scrape_success }}% ({{ regs_scraped_success }} / {{ regs_scraped }})
+  </div>
+</div>
+<hr>
+{% endblock %}

@@ -1,0 +1,63 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "11232",
+               "short_name" : "11232",
+               "types" : [ "postal_code" ]
+            },
+            {
+               "long_name" : "Brooklyn",
+               "short_name" : "Brooklyn",
+               "types" : [ "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Kings",
+               "short_name" : "Kings",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "New York",
+               "short_name" : "NY",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United States",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Brooklyn, NY 11232, USA",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 40.6719948,
+                  "lng" : -73.99167290000001
+               },
+               "southwest" : {
+                  "lat" : 40.64340989999999,
+                  "lng" : -74.0245759
+               }
+            },
+            "location" : {
+               "lat" : 40.6560436,
+               "lng" : -74.0079781
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 40.6719948,
+                  "lng" : -73.99167290000001
+               },
+               "southwest" : {
+                  "lat" : 40.64340989999999,
+                  "lng" : -74.0245759
+               }
+            }
+         },
+         "types" : [ "postal_code" ]
+      }
+   ],
+   "status" : "OK"
+}
