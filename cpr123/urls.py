@@ -4,6 +4,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+import cpr123.views
+
 subdir = r'^cpr123/'
 
 urlpatterns = patterns('',
@@ -18,5 +20,11 @@ urlpatterns = patterns('',
     url(subdir+r'admin/', include(admin.site.urls)),
     url(subdir+r'git/pull/', 'gitpull.pull'),
     url(subdir+r'', include('apps.ewatch.urls')),
-    url(subdir+r'login/$', 'django.contrib.auth.views.login', name="login")
+
+    url(subdir+r'accounts/login/$', 
+        'django.contrib.auth.views.login', 
+        name="login_page"),
+    url(subdir+r'accounts/logout/$', 
+        cpr123.views.logout_page, 
+        name="logout_page")
 )

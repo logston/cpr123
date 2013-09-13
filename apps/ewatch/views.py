@@ -5,6 +5,7 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from apps.ewatch.models import *
 from libs.api.google_geocode import get_lat_long
@@ -19,7 +20,7 @@ def index(request):
 
 @login_required
 def scrape_details(request):
-    tdata = {}
+    tdata = RequestContext(request, {})
 
     tdata['last_class'] = Class.objects.order_by('-time').all()[0].time
 
@@ -54,8 +55,9 @@ def main_locations():
     loc_KG = Location.objects.get(name='Queens Kew Gardens')
     return (loc_MN, loc_LI, loc_KG)
 
+@login_required
 def tally_classes(request):
-    c = {}
+    c = RequestContext(request, {})
 
     c['last_class'] = Class.objects.order_by('-time').all()[0].time
 
@@ -86,8 +88,9 @@ def tally_classes(request):
     
     return render_to_response('ewatch/tally_classes.html', c)
 
+@login_required
 def tally_classes2(request):
-    c = {}
+    c = RequestContext(request, {})
 
     c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
     c['last_class'] = Class.objects.order_by('-time').all()[0].time
@@ -136,9 +139,9 @@ def loc_tally(classes, dt, course, loc):
         cnt += 1
     return cnt
 
-
+@login_required
 def tally_revenue(request):
-    c = {}
+    c = RequestContext(request, {})
 
     c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
     c['last_class'] = Class.objects.order_by('-time').all()[0].time
@@ -165,8 +168,9 @@ def tally_revenue(request):
 
     return render_to_response('ewatch/tally_revenue.html', c)
 
+@login_required
 def heatmap(request):
-    c = {}
+    c = RequestContext(request, {})
     reg_mail_zips = Registration.objects.values('mailing_address__zip_code')
     mailing_zips = [zcD['mailing_address__zip_code'][:5] for zcD in \
         reg_mail_zips if zcD['mailing_address__zip_code'] and \
