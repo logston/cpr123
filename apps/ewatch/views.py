@@ -4,6 +4,7 @@ from decimal import Decimal
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -192,4 +193,49 @@ def heatmap(request):
 
     return render_to_response('ewatch/heatmap.html', c)
 
+@login_required
+def dist_of_reg_times(request):
+    c = RequestContext(request, {})
+    return render_to_response('ewatch/dist_of_reg_times.html', c)
 
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+
+"""
+Ideas on handing figures to templates.
+
+Images should be rendered to ImageField objects and handed back to 
+the view requesting them for display.
+
+Figures should have their own urls and should be rendered via
+their own individual views. The urls of those views should be
+inserted into templates. Issue with this is rerednering previously
+rendered stuff. Also the urls are liable to change often given
+what it represents.
+For smaller projects with few figures I think this is the better 
+option. 
+
+"""
+def dist_of_reg_times_fig(request):
+    times_queryset = Registration.objects.values('class_pk__time', 'registration_time')
+
+    tdeltas = ([t['class_pk__time'] - t['registration_time'] 
+                for t in times_queryset if t['registration_time']])
+
+    tdeltas = [t.total_seconds()/(24*60*60) for t in tdeltas]
+
+    fig = Figure(figsize=[8,8])
+    ax = fig.add_subplot(1,1,1)
+    canvas = FigureCanvasAgg(fig)
+
+    bins = range(-10,60,1)
+    n, bins, patches = ax.hist(tdeltas, bins, normed=1, facecolor='green', alpha=0.5)
+
+    ax.set_xlabel('Days in advance of class')
+    ax.set_ylabel('Fraction of Registrations')
+    ax.set_title('Registrations Times')
+
+    response = HttpResponse(content_type='image/png')
+    canvas.print_figure(response, facecolor='w')
+
+    return response

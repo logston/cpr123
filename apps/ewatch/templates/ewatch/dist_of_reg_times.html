@@ -1,0 +1,23 @@
+{% extends "ewatch/base.html" %}
+{% load static from staticfiles %}
+
+{% block container %}
+<h1>Distribution of Registration Times</h1>
+
+<p>
+  This histogram is updated every 3 minutes M-F, 9am - 6pm. The numbers do not reflect all of CPR123 histroy. The totals only reflect what has been collected from enrollware prior to the last collection time. These numbers are also constrained by the success of all class scrapes. Details on the success of those scrapes can be found at the 'Scrape Details' link above.
+</p>
+
+<p>
+  Last fetch: {{ last_fetch }}
+  <br>
+  Last class covered: {{ last_class }}
+</p>
+
+<div class="row">
+  <div class="span6 offset3">
+    <img src="/cpr123/figure/registration_times" width="700" />
+  </div>
+</div>
+
+{% endblock %}
