@@ -18,5 +18,3 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
 	url(r'^figure/registration_times/$', views.dist_of_reg_times_fig),
 	)
-
-print (urlpatterns)

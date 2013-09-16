@@ -22,34 +22,39 @@ def index(request):
 
 @login_required
 def scrape_details(request):
-    tdata = RequestContext(request, {})
-
-    tdata['last_class'] = Class.objects.order_by('-time').all()[0].time
+    c = RequestContext(request, {})
+    c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
+    c['last_class'] = Class.objects.order_by('-time').all()[0].time
 
     # percent of past classes scraped
-    scraped_c = UpdateCheckClass.objects.values_list('class_pk', flat=True)    
+    classes_scraped = set(UpdateCheckClass.objects.
+                     values_list('class_pk__enrollware_id', flat=True))
     # set the list so duplicates are removed
-    tdata['classes_scraped'] = len(set(scraped_c))
-    tdata['total_classes'] = Class.objects.all().count()
-    tdata['percent_classes_scraped'] = \
-        round((tdata['classes_scraped']/tdata['total_classes'])*100)
+    c['classes_scraped'] = len(classes_scraped)
+    c['total_classes'] = Class.objects.all().count()
+    c['percent_classes_scraped'] = round(
+        (c['classes_scraped']/c['total_classes']) * 100)
     
     # percent of class scrapes succuessful (ie. has course name)
-    tdata['classes_scrape_success'] = \
-        Class.objects.exclude(course='').exclude(course=None).count()
-    tdata['percent_classes_scrape_success'] = \
-        round((tdata['classes_scrape_success']/tdata['classes_scraped']) * 100)
+    c['classes_scrape_success'] = (Class.objects.
+                                   exclude(course='').
+                                   exclude(course=None).
+                                   count())
+    c['percent_classes_scrape_success'] = round(
+        (c['classes_scrape_success']/c['classes_scraped']) * 100)
             
     # percent of registrations scrapes sucuessful (ie. has name)
-    tdata['regs_scraped'] = UpdateCheckRegistration.objects.all().count()
-    tdata['regs_scraped_success'] = \
-        Registration.objects.\
-            exclude(total_charge=None).\
-            count()
-    tdata['percent_regs_scrape_success'] = \
-        round((tdata['regs_scraped_success']/tdata['regs_scraped']) * 100)
+    qset = (UpdateCheckRegistration.objects.
+            exclude(registration_pk__total_charge=None))
+    c['regs_scraped'] = len(set(
+        [q.registration_pk.enrollware_id for q in qset]))
+    c['regs_scraped_success'] = (Registration.objects.
+                                 exclude(total_charge=None).
+                                 count())
+    c['percent_regs_scrape_success'] = (round(
+        (c['regs_scraped_success']/c['regs_scraped']) * 100))
     
-    return render_to_response('ewatch/scrape_details.html', tdata)
+    return render_to_response('ewatch/scrape_details.html', c)
 
 def main_locations():
     loc_MN = Location.objects.get(name='Manhattan')
@@ -78,11 +83,11 @@ def tally_classes(request):
         for course in courses:
             course_tallies = [course['course'].replace('â\x84¢', '')]
             for loc in locs:
-                tally = Class.objects.\
-                    filter(time__year=dt.year).\
-                    filter(time__month=dt.month).\
-                    filter(course=course_tallies[0]).\
-                    filter(location=loc).count()
+                tally = (Class.objects.
+                         filter(time__year=dt.year).
+                         filter(time__month=dt.month).
+                         filter(course=course_tallies[0]).
+                         filter(location=loc).count())
                 course_tallies.append(tally)
             if sum(course_tallies[1:]):
                 stats_by_month_and_loc.append(course_tallies)
@@ -160,10 +165,10 @@ def tally_revenue(request):
         # this line is a hack to get months to show up correctly
         dt = dt.astimezone(UTC()) + timedelta(hours=6)
         for loc in locs:
-            regs = Registration.objects.\
-                filter(class_pk__time__year=dt.year).\
-                filter(class_pk__time__month=dt.month).\
-                filter(class_pk__location=loc)
+            regs = (Registration.objects.
+                    filter(class_pk__time__year=dt.year).
+                    filter(class_pk__time__month=dt.month).
+                    filter(class_pk__location=loc))
             loc_stats.append(
                 sum([reg.total_charge for reg in regs if reg.total_charge]))
         c['stats_by_month_and_loc'].append((dt,loc_stats))
@@ -174,9 +179,10 @@ def tally_revenue(request):
 def heatmap(request):
     c = RequestContext(request, {})
     reg_mail_zips = Registration.objects.values('mailing_address__zip_code')
-    mailing_zips = [zcD['mailing_address__zip_code'][:5] for zcD in \
-        reg_mail_zips if zcD['mailing_address__zip_code'] and \
-        is_valid_zip(zcD['mailing_address__zip_code'][:5])]
+    mailing_zips = [zcD['mailing_address__zip_code'][:5] 
+                    for zcD in reg_mail_zips if 
+                    zcD['mailing_address__zip_code'] and 
+                    is_valid_zip(zcD['mailing_address__zip_code'][:5])]
     zip_counter = Counter(mailing_zips).most_common(200)
     #mcz_count = zip_counter.most_common(1)[0][1]
     #zip_relative_probabi = [(zc, round((cnt/mcz_count), 3)) for zc, cnt in zip_counter.items()]
