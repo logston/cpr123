@@ -61,7 +61,11 @@
               {% else %}
               <input class="span2" name="username" type="text" placeholder="Username">
               <input class="span2" name="password" type="password" placeholder="Password">
+              {% if request.REQUEST.next %}
               <input type="hidden" name="next" value="{{ request.REQUEST.next }}" />
+              {% else %}
+              <input type="hidden" name="next" value="/cpr123/" />
+              {% endif %}
               <button type="submit" value="login" class="btn">Sign in</button>
               {% endif %}
             </form>

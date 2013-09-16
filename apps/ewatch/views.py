@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 def index(request):
-    return render_to_response('ewatch/index.html')
+    c = RequestContext(request, {})
+    return render_to_response('ewatch/index.html', c)
 
 @login_required
 def scrape_details(request):
