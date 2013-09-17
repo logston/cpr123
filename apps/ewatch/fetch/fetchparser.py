@@ -79,12 +79,12 @@ class FetchParser():
                   split('mainContent_addStudentLink')[0].
                   split('<h3>')[1].
                   split('</h3>')[0])
-        return sliver.split('-')[1].strip()
+        return sliver.split('-')[-1].strip()
 
     def _get_class_time(self, html):
         """Return an aware datetime instance"""
         patt = r'.*, (\S*) (\d+), (\d+) at (\d+):(\d+) ([A|P]M).*'
-        r = re.match(patt, self._get_class_time_str(html), re.DOTALL)
+        r = re.match(patt, self._get_class_time_str(html), re.DOTALL) 
         g = r.groups()
         day = str(g[1]) if len(g[1]) == 2 else str('0'+g[1])
         hour = str(g[3]) if len(g[3]) == 2 else str('0'+g[3])
