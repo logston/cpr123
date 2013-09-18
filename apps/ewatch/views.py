@@ -34,6 +34,10 @@ def scrape_details(request):
     c['total_classes'] = Class.objects.all().count()
     c['percent_classes_scraped'] = round(
         (c['classes_scraped']/c['total_classes']) * 100)
+
+
+    c['days_till_complete_coverage'] = round((c['total_classes'] - 
+        c['classes_scraped']) / 180, 2)
     
     # percent of class scrapes succuessful (ie. has course name)
     c['classes_scrape_success'] = (Class.objects.
