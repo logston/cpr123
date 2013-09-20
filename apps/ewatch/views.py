@@ -25,20 +25,19 @@ def scrape_details(request):
     c = RequestContext(request, {})
     c['last_fetch'] = UpdateCheckClass.objects.order_by('-time').all()[0].time
     c['last_class'] = Class.objects.order_by('-time').all()[0].time
+    c['total_classes'] = Class.objects.all().count()
 
     # percent of past classes scraped
     classes_scraped = set(UpdateCheckClass.objects.
                      values_list('class_pk__enrollware_id', flat=True))
     # set the list so duplicates are removed
     c['classes_scraped'] = len(classes_scraped)
-    c['total_classes'] = Class.objects.all().count()
     c['percent_classes_scraped'] = round(
         (c['classes_scraped']/c['total_classes']) * 100)
 
-
     c['days_till_complete_coverage'] = round((c['total_classes'] - 
         c['classes_scraped']) / 180, 2)
-    
+
     # percent of class scrapes succuessful (ie. has course name)
     c['classes_scrape_success'] = (Class.objects.
                                    exclude(course='').
@@ -47,6 +46,7 @@ def scrape_details(request):
     c['percent_classes_scrape_success'] = round(
         (c['classes_scrape_success']/c['classes_scraped']) * 100)
             
+    # make ajax URL for this below
     # percent of registrations scrapes sucuessful (ie. has name)
     qset = (UpdateCheckRegistration.objects.
             exclude(registration_pk__total_charge=None))
@@ -57,7 +57,8 @@ def scrape_details(request):
                                  count())
     c['percent_regs_scrape_success'] = (round(
         (c['regs_scraped_success']/c['regs_scraped']) * 100))
-    
+
+
     return render_to_response('ewatch/scrape_details.html', c)
 
 def main_locations():

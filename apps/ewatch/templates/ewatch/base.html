@@ -81,5 +81,21 @@
         <p>&copy; Paul Logston 2013</p>
       </footer>
     </div>
+    
+    <script type="text/javascript">
+    function get_class_coverage(){
+        $.ajax({url: "/cpr123/ajax/class_coverage/",
+                success: function(r){
+                  width = Math.round((r.classes_scraped/r.total_classes)*100);             
+                  $( "div#class_scrape_coverage div.bar" ).css( "width", width+"%");
+                  $( "#class_coverage_percent" ).html(width);
+                  $( "#classes_scraped" ).html(r.classes_scraped);
+                }});
+        }
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(get_class_coverage);
+    </script>
 </body>
 </html>

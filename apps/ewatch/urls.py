@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 
+from apps.ewatch import ajax_views
 from apps.ewatch import views
 
 urlpatterns = patterns('',
@@ -17,4 +18,8 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
 	url(r'^figure/registration_times/$', views.dist_of_reg_times_fig),
+	)
+
+urlpatterns += patterns('',
+	url(r'^ajax/class_coverage/$', ajax_views.class_coverage),
 	)
