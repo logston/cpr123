@@ -57,10 +57,9 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=16, blank=True)
 
     def __str__(self):
-        return ', '.join([
-                self.city,
-                self.state,
-                self.zip_code])
+        return ', '.join([str(self.city),
+                          str(self.state),
+                          str(self.zip_code)])
 
 class Location(models.Model):
     """Model a Training Center Location"""
